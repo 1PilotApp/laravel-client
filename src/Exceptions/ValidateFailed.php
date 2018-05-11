@@ -2,7 +2,6 @@
 namespace CmsPilot\LAravelClient\Exceptions;
 
 use Exception;
-use Illuminate\Http\Request;
 
 class ValidateFailed extends Exception
 {

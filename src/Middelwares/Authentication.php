@@ -9,7 +9,7 @@
 namespace CmsPilot\LaravelClient\Middelwares;
 
 use Closure;
-use CmsPilot\Client\Exceptions\ValidateFailed;
+use CmsPilot\LaravelClient\Exceptions\ValidateFailed;
 
 class Authentication
 {
@@ -24,7 +24,7 @@ class Authentication
             throw ValidateFailed::missingSignature();
         }
 
-        if ($this->isValidateTimeStamp()) {
+        if ($this->isValidateTimeStamp($stamp)) {
             throw ValidateFailed::invalidTimestamp();
         }
 
@@ -35,7 +35,7 @@ class Authentication
         return $next($request);
     }
 
-    protected function isValidSignature(string $signature, string $payload): bool
+    protected function isValidSignature(string $signature, string $stamp)
     {
         $secret = config('cmspilot.private_key');
 
@@ -43,7 +43,7 @@ class Authentication
             throw ValidateFailed::signingPrivateKeyNotSet();
         }
 
-        $computedSignature = hash_hmac('sha256', $payload, $secret);
+        $computedSignature = hash_hmac('sha256', $stamp, $secret);
 
         return hash_equals($signature, $computedSignature);
     }
@@ -54,13 +54,13 @@ class Authentication
      *
      * @return boolean
      */
-    private function isValidateTimeStamp()
+    private function isValidateTimeStamp($stamp)
     {
         if ($secret = config('cmspilot.skip_time_stamp_validation')) {
             return true;
         }
 
-        if (($this->stamp > time() - 360) && ($this->stamp < time() + 360)) {
+        if ((stamp > time() - 360) && (stamp < time() + 360)) {
             return true;
         }
 
