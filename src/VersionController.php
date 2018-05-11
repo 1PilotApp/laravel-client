@@ -1,6 +1,6 @@
 <?php
 
-namespace CmsPilot\Client;
+namespace CmsPilot\LaravelClient;
 
 use App;
 use Cache;

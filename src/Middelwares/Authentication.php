@@ -6,7 +6,7 @@
  * Time: 10:28
  */
 
-namespace cmspilot\client\Middelwares;
+namespace CmsPilot\LaravelClient\Middelwares;
 
 use Closure;
 use CmsPilot\Client\Exceptions\ValidateFailed;
