@@ -3,7 +3,7 @@
 namespace CmsPilot\Client\Middelwares;
 
 use Closure;
-use CmsPilot\LaravelClient\Exceptions\ValidateFailed;
+use CmsPilot\Client\Exceptions\ValidateFailed;
 
 class Authentication
 {
@@ -54,7 +54,7 @@ class Authentication
             return true;
         }
 
-        if ((stamp > time() - 360) && (stamp < time() + 360)) {
+        if (($stamp > time() - 360) && ($stamp < time() + 360)) {
             return true;
         }
 
