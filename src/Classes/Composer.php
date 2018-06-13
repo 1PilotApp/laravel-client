@@ -10,13 +10,6 @@ class Composer
 {
     use Instantiable;
 
-    private $laravelDependencies;
-
-    public function __construct()
-    {
-        $this->setAllLaravelDependencies();
-    }
-
     /**
      * Get information for composer installed packages (currently installed version and latest stable version)
      *
@@ -24,36 +17,32 @@ class Composer
      */
     public function getPackagesData()
     {
-        $moduleVersions = [];
+        $packages = [];
 
         $installedJsonFile = base_path('vendor/composer/installed.json');
-        $packages = json_decode(file_get_contents($installedJsonFile));
+        $installedPackages = json_decode(file_get_contents($installedJsonFile));
 
-        if (count($packages) == 0) {
+        if (count($installedPackages) == 0) {
             return [];
         }
 
-        foreach ($packages as $package) {
+        foreach ($installedPackages as $package) {
+            $latestVersion = $this->getLatestPackageVersion($package->name);
+            $currentVersion = $this->removePrefix($package->version);
 
-            if (($this->laravelDependencies->get($package->name))) {
-                continue;
+            if ($latestVersion == $currentVersion) {
+                $latestVersion = null;
             }
 
-            $latestStable = $this->getLatestPackage($package->name);
-
-            if (optional($latestStable)->version == $package->version) {
-                $latestStable->version = null;
-            }
-
-            $moduleVersions[] = [
+            $packages[] = [
                 'code'        => $package->name,
                 'active'      => 1,
-                'version'     => $package->version,
-                'new_version' => optional($latestStable)->version,
+                'version'     => $currentVersion,
+                'new_version' => $latestVersion,
             ];
         }
 
-        return $moduleVersions;
+        return $packages;
     }
 
 
@@ -66,15 +55,13 @@ class Composer
      */
     public function getLatestPackageVersion($packageName)
     {
-        $cacheKey = 'cmspilot-latest-package-' . md5($packageName);
+        $cacheKey = 'cmspilot-getLatestPackageVersion-' . md5($packageName);
 
-        $lastVersion = Cache::get($cacheKey, function () use ($packageName) {
-            return $this->getLatestPackage($packageName);
+        return Cache::remember($cacheKey, 10, function () use ($packageName) {
+            $package = $this->getLatestPackage($packageName);
+
+            return $this->removePrefix($package->version);
         });
-
-        if (is_object($lastVersion)) {
-            return $lastVersion->version;
-        }
     }
 
     /**
@@ -86,68 +73,49 @@ class Composer
      */
     private function getLatestPackage($packageName)
     {
-        $lastVersion = null;
-
-        // get version information from packagist
         $packagistUrl = 'https://packagist.org/packages/' . $packageName . '.json';
 
         try {
             $packagistInfo = json_decode(file_get_contents($packagistUrl));
             $versions = $packagistInfo->package->versions;
         } catch (\Exception $e) {
-            $versions = [];
+            return null;
         }
 
-        if (count($versions) > 0) {
-            $latestStableNormVersNo = '';
-            foreach ($versions as $versionData) {
-                $versionNo = $versionData->version;
-                $normVersNo = $versionData->version_normalized;
-                $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNo));
+        if (!is_object($versions)) {
+            return null;
+        }
 
-                // only use stable version numbers
-                if ($stability === 'stable' && version_compare($normVersNo, $latestStableNormVersNo) >= 0) {
-                    $lastVersion = $versionData;
-                    $latestStableNormVersNo = $normVersNo;
-                }
+        $lastVersion = null;
+
+        foreach ($versions as $versionData) {
+            $versionNumber = $versionData->version;
+            $normalizeVersionNumber = $versionData->version_normalized;
+            $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNumber));
+
+            // only use stable version numbers
+            if ($stability === 'stable'
+                && version_compare($normalizeVersionNumber, $lastVersion->version_normalized ?? '', '>=')) {
+                $lastVersion = $versionData;
             }
         }
 
         return $lastVersion;
     }
 
-    private function setAllLaravelDependencies()
+    /**
+     * @param string $version
+     *
+     * @param string $prefix
+     *
+     * @return string
+     */
+    private function removePrefix($version, $prefix = 'v')
     {
-        $initialDependencies = $this->getDependencies("laravel/framework");
-
-        $allDependencies = collect([]);
-        foreach ($initialDependencies as $key => $dependency) {
-
-            $allDependencies = $allDependencies->merge($this->getDependencies($key));
+        if (empty($version) || !starts_with($version, $prefix)) {
+            return $version;
         }
 
-        $this->laravelDependencies = $allDependencies;
-    }
-
-    private function getDependencies($package)
-    {
-        $packageFile = base_path("/vendor/" . $package . "/composer.json");
-
-        if (!file_exists($packageFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($packageFile);
-        $dependenciesArray = json_decode($content, true);
-
-        $dependencies = array_key_exists('require',
-            $dependenciesArray) ? $dependenciesArray['require'] : 'No dependencies';
-
-        return collect($dependencies);
-
-        $devDependencies = array_key_exists('require-dev',
-            $dependenciesArray) ? $dependenciesArray['require-dev'] : 'No dependencies';
-
-        return collect($dependencies)->merge($devDependencies);
+        return substr($version, strlen($prefix));
     }
 }
