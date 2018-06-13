@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: PAV
- * Date: 11.05.2018
- * Time: 10:28
- */
 
-namespace CmsPilot\LaravelClient\Middelwares;
+namespace CmsPilot\Client\Middelwares;
 
 use Closure;
 use CmsPilot\LaravelClient\Exceptions\ValidateFailed;

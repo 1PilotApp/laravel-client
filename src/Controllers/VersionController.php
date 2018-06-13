@@ -1,8 +1,7 @@
 <?php
 
-namespace CmsPilot\LaravelClient;
+namespace CmsPilot\Client\Controllers;
 
-use App;
 use Cache;
 use CmsPilot\Client\Middelwares\Authentication;
 use Composer\Semver\VersionParser;

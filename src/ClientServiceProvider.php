@@ -1,6 +1,6 @@
 <?php
 
-namespace CmsPilot\LaravelClient;
+namespace CmsPilot\Client;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,9 +13,10 @@ class ClientServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
         $this->publishes([
-            __DIR__.'/config/cmspilot.php' => config_path('cmspilot.php'),
+            __DIR__ . '/config/cmspilot.php' => config_path('cmspilot.php'),
         ]);
     }
 

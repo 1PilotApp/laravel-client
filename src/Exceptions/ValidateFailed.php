@@ -1,5 +1,5 @@
 <?php
-namespace CmsPilot\LAravelClient\Exceptions;
+namespace CmsPilot\Client\Exceptions;
 
 use Exception;
 
