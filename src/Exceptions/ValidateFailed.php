@@ -13,7 +13,12 @@ class ValidateFailed extends Exception
 
     public static function invalidSignature($signature)
     {
-        return new static("The signature `{$signature}` found in the header s invalid");
+        return new static("The signature `{$signature}` found in the header is invalid");
+    }
+
+    public static function invalidTimestamp()
+    {
+        return new static("The timestamp found in the header is invalid");
     }
 
     public static function signingPrivateKeyNotSet()
