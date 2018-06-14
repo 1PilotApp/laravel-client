@@ -9,16 +9,14 @@ class Authentication
 {
     public function handle($request, Closure $next)
     {
-        return $next($request);
-
-        $signature = $request->header('HTTP_HASH');
-        $stamp = $request->header('HTTP_STAMP');
+        $signature = $request->header('hash');
+        $stamp = $request->header('stamp');
 
         if (!$signature) {
             throw ValidateFailed::missingSignature();
         }
 
-        if ($this->isValidateTimeStamp($stamp)) {
+        if (!$this->isValidateTimeStamp($stamp)) {
             throw ValidateFailed::invalidTimestamp();
         }
 

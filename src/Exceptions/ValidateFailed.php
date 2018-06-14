@@ -1,4 +1,5 @@
 <?php
+
 namespace CmsPilot\Client\Exceptions;
 
 use Exception;
@@ -29,7 +30,11 @@ class ValidateFailed extends Exception
 
     public function render($request)
     {
-        return response(['error' => $this->getMessage()], 400);
+        return response([
+            'message' => $this->getMessage(),
+            'status'  => 400,
+            'data'    => [],
+        ], 400);
     }
 
 }
