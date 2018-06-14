@@ -16,7 +16,7 @@ class ClientServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
         $this->publishes([
-            __DIR__ . '/config/cmspilot.php' => config_path('cmspilot.php'),
+            __DIR__ . '/../config/cmspilot.php' => config_path('cmspilot.php'),
         ]);
     }
 
