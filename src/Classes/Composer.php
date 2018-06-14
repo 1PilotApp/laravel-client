@@ -41,7 +41,9 @@ class Composer
             $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
 
             $packages[] = [
+                'name'                   => str_after($package->name, '/'),
                 'code'                   => $package->name,
+                'type'                   => 'package',
                 'active'                 => 1,
                 'version'                => $currentVersion,
                 'new_version'            => $latestVersion['compatible'],
@@ -51,7 +53,6 @@ class Composer
 
         return $packages;
     }
-
 
     /**
      * Get latest (stable) version number of composer package
