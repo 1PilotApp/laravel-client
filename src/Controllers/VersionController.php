@@ -8,11 +8,6 @@ use CmsPilot\Client\Middelwares\Authentication;
 use DB;
 use Illuminate\Routing\Controller;
 
-/**
- * Class VersionMonitoringController
- *
- * @package CmsPilot\Monitoring\Controllers
- */
 class VersionController extends Controller
 {
     const CONFIGS_TO_MONITOR = [
@@ -44,9 +39,12 @@ class VersionController extends Controller
 
     public function getVersions()
     {
+        $laravel = Composer::instance()->getLatestPackageVersion('laravel/framework', app()->version());
+
         return [
-            'version'     => app()->version(),
-            'new_version' => Composer::instance()->getLatestPackageVersion("laravel/framework"),
+            'version'                => app()->version(),
+            'new_version'            => $laravel['compatible'],
+            'last_available_version' => $laravel['available'],
         ];
     }
 

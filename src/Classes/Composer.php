@@ -3,12 +3,29 @@
 namespace CmsPilot\Client\Classes;
 
 use CmsPilot\Client\Traits\Instantiable;
+use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Illuminate\Support\Facades\Cache;
 
 class Composer
 {
     use Instantiable;
+
+    /** @var array */
+    protected static $installedPackages;
+
+    /** @var \Illuminate\Support\Collection */
+    protected static $packagesContraints;
+
+    public function __construct()
+    {
+        $installedJsonFile = base_path('vendor/composer/installed.json');
+        $installedPackages = json_decode(file_get_contents($installedJsonFile));
+
+        self::$installedPackages = count($installedPackages) == 0 ? [] : $installedPackages;
+
+        self::$packagesContraints = $this->getPackagesConstraints();
+    }
 
     /**
      * Get information for composer installed packages (currently installed version and latest stable version)
@@ -19,26 +36,16 @@ class Composer
     {
         $packages = [];
 
-        $installedJsonFile = base_path('vendor/composer/installed.json');
-        $installedPackages = json_decode(file_get_contents($installedJsonFile));
-
-        if (count($installedPackages) == 0) {
-            return [];
-        }
-
-        foreach ($installedPackages as $package) {
-            $latestVersion = $this->getLatestPackageVersion($package->name);
+        foreach (self::$installedPackages as $package) {
             $currentVersion = $this->removePrefix($package->version);
-
-            if ($latestVersion == $currentVersion) {
-                $latestVersion = null;
-            }
+            $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
 
             $packages[] = [
-                'code'        => $package->name,
-                'active'      => 1,
-                'version'     => $currentVersion,
-                'new_version' => $latestVersion,
+                'code'                   => $package->name,
+                'active'                 => 1,
+                'version'                => $currentVersion,
+                'new_version'            => $latestVersion['compatible'],
+                'last_available_version' => $latestVersion['available'],
             ];
         }
 
@@ -49,18 +56,23 @@ class Composer
     /**
      * Get latest (stable) version number of composer package
      *
-     * @param string $packageName , the name of the package as registered on packagist, e.g. 'laravel/framework'
+     * @param string $packageName    The name of the package as registered on packagist, e.g. 'laravel/framework'
+     * @param string $currentVersion If provided will ignore this version (if last one is $currentVersion will return null)
      *
-     * @return string|null
+     * @return array ['compatible' => $version, 'available' => $version]
      */
-    public function getLatestPackageVersion($packageName)
+    public function getLatestPackageVersion($packageName, $currentVersion = null)
     {
-        $cacheKey = 'cmspilot-getLatestPackageVersion-' . md5($packageName);
+        $cacheKey = 'cmspilot-getLatestPackageVersion-' . md5($packageName . $currentVersion);
 
-        return Cache::remember($cacheKey, 10, function () use ($packageName) {
-            $package = $this->getLatestPackage($packageName);
+        return Cache::remember($cacheKey, 10, function () use ($packageName, $currentVersion) {
+            $packages = $this->getLatestPackage($packageName);
 
-            return $this->removePrefix($package->version);
+            return collect($packages)->map(function ($package) use ($currentVersion) {
+                $version = $this->removePrefix(optional($package)->version);
+
+                return $version == $currentVersion ? null : $version;
+            });
         });
     }
 
@@ -69,7 +81,7 @@ class Composer
      *
      * @param string $packageName , the name of the package as registered on packagist, e.g. 'laravel/framework'
      *
-     * @return object|null
+     * @return array ['compatible' => (object) $version, 'available' => (object) $version]
      */
     private function getLatestPackage($packageName)
     {
@@ -86,7 +98,10 @@ class Composer
             return null;
         }
 
-        $lastVersion = null;
+        $lastCompatibleVersion = null;
+        $lastAvailableVersion = null;
+
+        $packageConstraints = self::$packagesContraints->get($packageName);
 
         foreach ($versions as $versionData) {
             $versionNumber = $versionData->version;
@@ -94,13 +109,35 @@ class Composer
             $stability = VersionParser::normalizeStability(VersionParser::parseStability($versionNumber));
 
             // only use stable version numbers
-            if ($stability === 'stable'
-                && version_compare($normalizeVersionNumber, $lastVersion->version_normalized ?? '', '>=')) {
-                $lastVersion = $versionData;
+            if ($stability !== 'stable') {
+                continue;
+            }
+
+            if (version_compare($normalizeVersionNumber, $lastAvailableVersion->version_normalized ?? '', '>=')) {
+                $lastAvailableVersion = $versionData;
+            }
+
+            if (empty($packageConstraints)) {
+                continue;
+            }
+
+            // only use stable version that follow constraint
+            if (
+                version_compare($normalizeVersionNumber, $lastCompatibleVersion->version_normalized ?? '', '>=')
+                && Semver::satisfies($normalizeVersionNumber, $packageConstraints)
+            ) {
+                $lastCompatibleVersion = $versionData;
             }
         }
 
-        return $lastVersion;
+        if ($lastCompatibleVersion === $lastAvailableVersion) {
+            $lastAvailableVersion = null;
+        }
+
+        return [
+            'compatible' => $lastCompatibleVersion,
+            'available'  => $lastAvailableVersion,
+        ];
     }
 
     /**
@@ -117,5 +154,43 @@ class Composer
         }
 
         return substr($version, strlen($prefix));
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    private function getPackagesConstraints()
+    {
+        $composers = collect()
+            ->push(base_path('composer.json'))
+            ->merge(glob(base_path('vendor/*/*/composer.json')))
+            ->filter(function ($path) {
+                return file_exists($path);
+            })
+            ->map(function ($path) {
+                $content = file_get_contents($path);
+
+                return json_decode($content)->require ?? null;
+            });
+
+        $constraints = [];
+
+        foreach ($composers as $packages) {
+            foreach ($packages as $package => $constraint) {
+                if (strpos($package, '/') === false) {
+                    continue;
+                }
+
+                if (!isset($constraints[$package])) {
+                    $constraints[$package] = [];
+                }
+
+                $constraints[$package][] = $constraint;
+            }
+        }
+
+        return collect($constraints)->map(function ($items) {
+            return implode(',', $items);
+        });
     }
 }
