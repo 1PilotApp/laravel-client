@@ -11,9 +11,17 @@
     "require": {
         "composer/semver": "^1.4"
     },
+    "require-dev": {
+        "orchestra/testbench": "~3.0"
+    },
     "autoload": {
         "psr-4": {
-            "CmsPilot\\LaravelClient\\": "src/"
+            "CmsPilot\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CmsPilot\\Client\\Tests\\": "tests"
         }
     },
     "extra": {
