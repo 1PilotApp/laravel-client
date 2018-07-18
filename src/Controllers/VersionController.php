@@ -1,10 +1,10 @@
 <?php
 
-namespace CmsPilot\Client\Controllers;
+namespace OnePilot\Client\Controllers;
 
-use CmsPilot\Client\Classes\Composer;
-use CmsPilot\Client\Classes\Files;
-use CmsPilot\Client\Middelwares\Authentication;
+use OnePilot\Client\Classes\Composer;
+use OnePilot\Client\Classes\Files;
+use OnePilot\Client\Middlewares\Authentication;
 use DB;
 use Illuminate\Routing\Controller;
 

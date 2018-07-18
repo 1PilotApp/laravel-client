@@ -1,6 +1,6 @@
 {
-    "name": "cmspilot/laravel-client",
-    "description": "Client to connect a Laravel app to cmsPilot service",
+    "name": "onepilot/laravel-client",
+    "description": "Client to connect a Laravel app to 1Pilot.io service",
     "keywords": ["laravel", "remote", "monitoring"],
     "license": "MIT",
     "authors": [
@@ -16,18 +16,18 @@
     },
     "autoload": {
         "psr-4": {
-            "CmsPilot\\Client\\": "src/"
+            "OnePilot\\Client\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "CmsPilot\\Client\\Tests\\": "tests"
+            "OnePilot\\Client\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "CmsPilot\\Client\\ClientServiceProvider"
+                "OnePilot\\Client\\ClientServiceProvider"
             ]
         }
     }

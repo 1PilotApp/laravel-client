@@ -1,15 +1,15 @@
 <?php
 
-namespace CmsPilot\Client\Tests\Integration;
+namespace OnePilot\Client\Tests\Integration;
 
-use CmsPilot\Client\Tests\TestCase;
+use OnePilot\Client\Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
     /** @test */
     public function it_will_fail_when_call_validate_without_authentication_headers()
     {
-        $response = $this->getJson('cmspilot/validate');
+        $response = $this->getJson('onepilot/validate');
 
         $response
             ->assertStatus(400)
@@ -23,7 +23,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function it_will_fail_when_no_authentication_headers_are_set()
     {
-        $response = $this->getJson('cmspilot/ping', []);
+        $response = $this->getJson('onepilot/ping', []);
 
         $response
             ->assertStatus(400)
@@ -39,7 +39,7 @@ class AuthenticationTest extends TestCase
     {
         $this->setTimestamp(1500000000);
 
-        $response = $this->getJson('cmspilot/ping', $this->authenticationHeaders());
+        $response = $this->getJson('onepilot/ping', $this->authenticationHeaders());
 
         $response
             ->assertStatus(400)
@@ -55,7 +55,7 @@ class AuthenticationTest extends TestCase
     {
         $this->setTimestamp("");
 
-        $response = $this->getJson('cmspilot/ping', $this->authenticationHeaders());
+        $response = $this->getJson('onepilot/ping', $this->authenticationHeaders());
 
         $response
             ->assertStatus(400)
@@ -71,9 +71,9 @@ class AuthenticationTest extends TestCase
     {
         $this->setTimestamp(1500000000);
 
-        config(['cmspilot.skip_time_stamp_validation' => true]);
+        config(['onepilot.skip_time_stamp_validation' => true]);
 
-        $response = $this->getJson('cmspilot/ping', $this->authenticationHeaders());
+        $response = $this->getJson('onepilot/ping', $this->authenticationHeaders());
 
         $response
             ->assertStatus(200)
@@ -85,7 +85,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function it_will_work_when_using_valid_stamp_and_hash()
     {
-        $response = $this->getJson('cmspilot/ping', $this->authenticationHeaders());
+        $response = $this->getJson('onepilot/ping', $this->authenticationHeaders());
 
         $response
             ->assertStatus(200)

@@ -4,15 +4,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CmsPilot - Private Key
+    | 1Pilot - Private Key
     |--------------------------------------------------------------------------
     |
-    | cmsPilot will sign validation call using this secret. Please set
+    | 1Pilot will sign validation call using this secret. Please set
     | a random generated string.
     |
     */
 
-    'private_key' => env('CMSPILOT_PRIVATE_KEY'),
+    'private_key' => env('ONEPILOT_PRIVATE_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,6 +25,6 @@ return [
     |
     */
 
-    'skip_time_stamp_validation' => env('CMSPILOT_SKIP_TIME_STAMP_VALIDATION'),
+    'skip_time_stamp_validation' => env('ONEPILOT_SKIP_TIME_STAMP_VALIDATION'),
 
 ];

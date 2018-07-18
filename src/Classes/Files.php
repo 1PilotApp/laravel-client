@@ -1,8 +1,8 @@
 <?php
 
-namespace CmsPilot\Client\Classes;
+namespace OnePilot\Client\Classes;
 
-use CmsPilot\Client\Traits\Instantiable;
+use OnePilot\Client\Traits\Instantiable;
 
 class Files
 {

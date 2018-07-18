@@ -1,6 +1,6 @@
 <?php
 
-namespace CmsPilot\Client\Traits;
+namespace OnePilot\Client\Traits;
 
 trait Instantiable
 {

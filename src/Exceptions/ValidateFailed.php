@@ -1,6 +1,6 @@
 <?php
 
-namespace CmsPilot\Client\Exceptions;
+namespace OnePilot\Client\Exceptions;
 
 use Exception;
 
@@ -24,7 +24,7 @@ class ValidateFailed extends Exception
 
     public static function signingPrivateKeyNotSet()
     {
-        return new static('The private key is not set. Make sure that the `cmspilot.private_key` config key is set.');
+        return new static('The private key is not set. Make sure that the `onepilot.private_key` config key is set.');
     }
 
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace CmsPilot\Client\Controllers;
+namespace OnePilot\Client\Controllers;
 
-use CmsPilot\Client\Middelwares\Authentication;
+use OnePilot\Client\Middlewares\Authentication;
 use Illuminate\Routing\Controller;
 
 /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace CmsPilot\Client\Middelwares;
+namespace OnePilot\Client\Middlewares;
 
 use Closure;
-use CmsPilot\Client\Exceptions\ValidateFailed;
+use OnePilot\Client\Exceptions\ValidateFailed;
 
 class Authentication
 {
@@ -29,7 +29,7 @@ class Authentication
 
     protected function isValidSignature(string $signature, string $stamp)
     {
-        $secret = config('cmspilot.private_key');
+        $secret = config('onepilot.private_key');
 
         if (empty($secret)) {
             throw ValidateFailed::signingPrivateKeyNotSet();
@@ -48,7 +48,7 @@ class Authentication
      */
     private function isValidateTimeStamp($stamp)
     {
-        if ($secret = config('cmspilot.skip_time_stamp_validation')) {
+        if ($secret = config('onepilot.skip_time_stamp_validation')) {
             return true;
         }
 

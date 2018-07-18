@@ -1,8 +1,8 @@
 <?php
 
-namespace CmsPilot\Client\Tests;
+namespace OnePilot\Client\Tests;
 
-use CmsPilot\Client\ClientServiceProvider;
+use OnePilot\Client\ClientServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -15,7 +15,7 @@ abstract class TestCase extends Orchestra
     {
         parent::setUp();
 
-        config(['cmspilot.private_key' => $this->privateKey]);
+        config(['onepilot.private_key' => $this->privateKey]);
 
         $this->setTimestamp();
     }

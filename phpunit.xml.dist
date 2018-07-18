@@ -10,7 +10,7 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="CmsPilot Test Suite">
+        <testsuite name="1Pilot Test Suite">
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>

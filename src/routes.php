@@ -1,5 +1,5 @@
 <?php
 
-Route::get('cmspilot/ping', 'CmsPilot\Client\Controllers\PingController@index');
+Route::get('onepilot/ping', 'OnePilot\Client\Controllers\PingController@index');
 
-Route::get('cmspilot/validate', 'CmsPilot\Client\Controllers\VersionController@index');
+Route::get('onepilot/validate', 'OnePilot\Client\Controllers\VersionController@index');

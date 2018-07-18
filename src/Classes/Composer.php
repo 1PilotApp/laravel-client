@@ -1,8 +1,8 @@
 <?php
 
-namespace CmsPilot\Client\Classes;
+namespace OnePilot\Client\Classes;
 
-use CmsPilot\Client\Traits\Instantiable;
+use OnePilot\Client\Traits\Instantiable;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Illuminate\Support\Facades\Cache;
@@ -64,7 +64,7 @@ class Composer
      */
     public function getLatestPackageVersion($packageName, $currentVersion = null)
     {
-        $cacheKey = 'cmspilot-getLatestPackageVersion-' . md5($packageName . $currentVersion);
+        $cacheKey = 'onepilot-getLatestPackageVersion-' . md5($packageName . $currentVersion);
 
         return Cache::remember($cacheKey, 10, function () use ($packageName, $currentVersion) {
             $packages = $this->getLatestPackage($packageName);
