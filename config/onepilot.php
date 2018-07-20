@@ -25,6 +25,6 @@ return [
     |
     */
 
-    'skip_time_stamp_validation' => env('ONEPILOT_SKIP_TIME_STAMP_VALIDATION'),
+    'skip_time_stamp_validation' => false,
 
 ];

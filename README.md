@@ -1,4 +1,6 @@
-# :package_name
+**PACKAGE STILL IN DEVELOPMENT**
+
+# 1Pilot.io connector for Laravel applications
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -7,37 +9,20 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-**Note:** Replace ```:author_name``` ```:author_username``` ```:author_website``` ```:author_email``` ```:vendor``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line. You can run `$ php prefill.php` in the command line to make all replacements at once. Delete the file prefill.php as well.
-
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
-PSRs you support to avoid any confusion with users and contributors.
-
-## Structure
-
-If any of the following are applicable to your project, then the directory structure should follow industry best practices by being named the following.
-
-```
-bin/        
-config/
-src/
-tests/
-vendor/
-```
-
+[1Pilot.io](1pilot.io) is a central Dashboard to manage your websites. It offers you a simple way to have all your websites
+and applications monitored on the same place. For Laravel applications you will benefit of the Uptime and Certificate 
+monitoring as well as the report of installed package and updates available: a simple way to keep your apps up-to-date
+and secure.
 
 ## Install
 
-Via Composer
-
 ``` bash
-$ composer require :vendor/:package_name
+composer require 1PilotApp/laravel-client
 ```
 
-## Usage
-
-``` php
-$skeleton = new League\Skeleton();
-echo $skeleton->echoPhrase('Hello, League!');
+You need to publish the config and set `private_key` to a random string
+```
+php artisan vendor:publish --provider="OnePilot\Client\ClientServiceProvider" --tag="config"
 ```
 
 ## Change log
@@ -47,7 +32,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ## Contributing
@@ -56,28 +41,28 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT
 
 ## Security
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
+If you discover any security related issues, please email support@1pilot.io instead of using the issue tracker.
 
 ## Credits
 
-- [:author_name][link-author]
+- [1Pilot.io][link-author]
 - [All Contributors][link-contributors]
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/:vendor/:package_name.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/1PilotApp/laravel-client.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/:vendor/:package_name/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/:vendor/:package_name.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/:vendor/:package_name.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/:vendor/:package_name.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/1PilotApp/laravel-client/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/1PilotApp/laravel-client.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/1PilotApp/laravel-client.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/1PilotApp/laravel-client.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/:vendor/:package_name
-[link-travis]: https://travis-ci.org/:vendor/:package_name
-[link-scrutinizer]: https://scrutinizer-ci.com/g/:vendor/:package_name/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/:vendor/:package_name
-[link-downloads]: https://packagist.org/packages/:vendor/:package_name
-[link-author]: https://github.com/:author_username
+[link-packagist]: https://packagist.org/packages/1PilotApp/laravel-client
+[link-travis]: https://travis-ci.org/1PilotApp/laravel-client
+[link-scrutinizer]: https://scrutinizer-ci.com/g/1PilotApp/laravel-client/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/1PilotApp/laravel-client
+[link-downloads]: https://packagist.org/packages/1PilotApp/laravel-client
+[link-author]: https://github.com/1PilotApp
 [link-contributors]: ../../contributors

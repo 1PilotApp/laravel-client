@@ -1,22 +1,7 @@
 # Changelog
 
-All notable changes to `:package_name` will be documented in this file.
+All notable changes to `laravel-client` will be documented in this file.
 
-Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+## 1.0.0 - YYYY-MM-DD
 
-## NEXT - YYYY-MM-DD
-
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
+- initial release
