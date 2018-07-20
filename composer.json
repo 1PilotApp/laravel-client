@@ -14,10 +14,15 @@
         }
     ],
     "require": {
+        "php": "^7.0",
+        "illuminate/http": "~5.5.0|~5.6.0",
+        "illuminate/routing": "~5.5.0|~5.6.0",
+        "illuminate/support": "~5.5.0|~5.6.0",
         "composer/semver": "^1.4"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0"
+        "phpunit/phpunit": "^6.0|^7.0",
+        "orchestra/testbench": "~3.5.0|~3.6.0"
     },
     "autoload": {
         "psr-4": {
@@ -28,6 +33,9 @@
         "psr-4": {
             "OnePilot\\Client\\Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     },
     "extra": {
         "laravel": {
