@@ -1,5 +1,5 @@
 {
-    "name": "1PilotApp/laravel-client",
+    "name": "1pilotapp/laravel-client",
     "description": "Client to connect a Laravel app to 1Pilot.io service",
     "keywords": [
         "1Pilot",
