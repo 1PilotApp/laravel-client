@@ -15,12 +15,12 @@ and secure.
 ## Install
 
 ``` bash
-composer require 1pilotapp/laravel-client
+composer require 1pilotapp/laravel-client:dev-master
 ```
 
 You need to publish the config and set `private_key` to a random string
 ```
-php artisan vendor:publish --provider="OnePilot\Client\ClientServiceProvider" --tag="config"
+php artisan vendor:publish --provider="OnePilot\Client\ClientServiceProvider"
 ```
 
 ## Change log
