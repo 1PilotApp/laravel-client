@@ -1,7 +1,12 @@
 {
-    "name": "onepilot/laravel-client",
+    "name": "1PilotApp/laravel-client",
     "description": "Client to connect a Laravel app to 1Pilot.io service",
-    "keywords": ["laravel", "remote", "monitoring"],
+    "keywords": [
+        "1Pilot",
+        "laravel",
+        "remote",
+        "monitoring"
+    ],
     "license": "MIT",
     "authors": [
         {
