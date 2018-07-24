@@ -23,8 +23,6 @@ class Files
             'public/.htaccess',
         ];
 
-        $files += glob(base_path('config/*'));
-
         $configFiles = $this->getConfigFiles();
 
         foreach ($files + $configFiles as $absolutePath => $relativePath) {
