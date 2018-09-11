@@ -2,7 +2,9 @@
 
 namespace OnePilot\Client\Tests;
 
+use OnePilot\Client\Classes\FakePackageDetector;
 use OnePilot\Client\ClientServiceProvider;
+use OnePilot\Client\Contracts\PackageDetector;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -18,6 +20,11 @@ abstract class TestCase extends Orchestra
         config(['onepilot.private_key' => $this->privateKey]);
 
         $this->setTimestamp();
+
+        $this->app->bind(PackageDetector::class, FakePackageDetector::class);
+
+        FakePackageDetector::setPackagesFromPath(__DIR__ . '/data/composer/installed-packages-light.json');
+        FakePackageDetector::generatePackagesConstraints();
     }
 
     /**

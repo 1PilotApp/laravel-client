@@ -1,0 +1,52 @@
+[
+    {
+        "require": {
+            "php": ">=7.0.0",
+            "fideloper/proxy": "~3.3",
+            "laravel/framework": "5.5.*",
+            "laravel/tinker": "~1.0"
+        }
+    },
+    {
+        "name": "laravel/framework",
+        "version": "v5.5.14",
+        "version_normalized": "5.5.14.0",
+        "require": {
+            "doctrine/inflector": "~1.1",
+            "erusev/parsedown": "~1.6",
+            "ext-mbstring": "*",
+            "ext-openssl": "*",
+            "league/flysystem": "~1.0",
+            "monolog/monolog": "~1.12",
+            "mtdowling/cron-expression": "~1.0",
+            "nesbot/carbon": "~1.20",
+            "php": ">=7.0",
+            "psr/container": "~1.0",
+            "psr/simple-cache": "^1.0",
+            "ramsey/uuid": "~3.0",
+            "swiftmailer/swiftmailer": "~6.0",
+            "symfony/console": "~3.3",
+            "symfony/debug": "~3.3",
+            "symfony/finder": "~3.3",
+            "symfony/http-foundation": "~3.3",
+            "symfony/http-kernel": "~3.3",
+            "symfony/process": "~3.3",
+            "symfony/routing": "~3.3",
+            "symfony/var-dumper": "~3.3",
+            "tijsverkoyen/css-to-inline-styles": "~2.2",
+            "vlucas/phpdotenv": "~2.2"
+        }
+    },
+    {
+        "name": "symfony/http-kernel",
+        "version": "v3.3.10",
+        "version_normalized": "3.3.10.0",
+        "require": {
+            "php": "^5.5.9|>=7.0.8",
+            "psr/log": "~1.0",
+            "symfony/debug": "~2.8|~3.0",
+            "symfony/event-dispatcher": "~2.8|~3.0",
+            "symfony/http-foundation": "~3.3"
+        }
+    }
+]

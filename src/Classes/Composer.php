@@ -2,10 +2,11 @@
 
 namespace OnePilot\Client\Classes;
 
-use OnePilot\Client\Traits\Instantiable;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Illuminate\Support\Facades\Cache;
+use OnePilot\Client\Contracts\PackageDetector;
+use OnePilot\Client\Traits\Instantiable;
 
 class Composer
 {
@@ -19,12 +20,12 @@ class Composer
 
     public function __construct()
     {
-        $installedJsonFile = base_path('vendor/composer/installed.json');
-        $installedPackages = json_decode(file_get_contents($installedJsonFile));
+        /** @var PackageDetector $detector */
+        $detector = app(PackageDetector::class);
 
-        self::$installedPackages = count($installedPackages) == 0 ? [] : $installedPackages;
+        self::$installedPackages = $detector->getPackages();
 
-        self::$packagesContraints = $this->getPackagesConstraints();
+        self::$packagesContraints = $detector->getPackagesConstraints();
     }
 
     /**
@@ -37,6 +38,10 @@ class Composer
         $packages = [];
 
         foreach (self::$installedPackages as $package) {
+            if (empty($package->version) || empty($package->name)) {
+                continue;
+            }
+
             $currentVersion = $this->removePrefix($package->version);
             $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
 
@@ -122,10 +127,10 @@ class Composer
                 continue;
             }
 
-            // only use stable version that follow constraint
+            // only use version that follow constraint
             if (
                 version_compare($normalizeVersionNumber, $lastCompatibleVersion->version_normalized ?? '', '>=')
-                && Semver::satisfies($normalizeVersionNumber, $packageConstraints)
+                && $this->checkConstraints($normalizeVersionNumber, $packageConstraints)
             ) {
                 $lastCompatibleVersion = $versionData;
             }
@@ -157,41 +162,14 @@ class Composer
         return substr($version, strlen($prefix));
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    private function getPackagesConstraints()
+    private function checkConstraints($version, $constraints)
     {
-        $composers = collect()
-            ->push(base_path('composer.json'))
-            ->merge(glob(base_path('vendor/*/*/composer.json')))
-            ->filter(function ($path) {
-                return file_exists($path);
-            })
-            ->map(function ($path) {
-                $content = file_get_contents($path);
-
-                return json_decode($content)->require ?? null;
-            });
-
-        $constraints = [];
-
-        foreach ($composers as $packages) {
-            foreach ($packages as $package => $constraint) {
-                if (strpos($package, '/') === false) {
-                    continue;
-                }
-
-                if (!isset($constraints[$package])) {
-                    $constraints[$package] = [];
-                }
-
-                $constraints[$package][] = $constraint;
+        foreach ($constraints as $constraint) {
+            if (Semver::satisfies($version, $constraint) !== true) {
+                return false;
             }
         }
 
-        return collect($constraints)->map(function ($items) {
-            return implode(',', $items);
-        });
+        return true;
     }
 }

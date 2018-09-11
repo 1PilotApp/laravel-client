@@ -2,11 +2,11 @@
 
 namespace OnePilot\Client\Controllers;
 
+use DB;
+use Illuminate\Routing\Controller;
 use OnePilot\Client\Classes\Composer;
 use OnePilot\Client\Classes\Files;
 use OnePilot\Client\Middlewares\Authentication;
-use DB;
-use Illuminate\Routing\Controller;
 
 class VersionController extends Controller
 {
@@ -49,19 +49,24 @@ class VersionController extends Controller
     }
 
     /**
-     * Get Joomla and system versions
+     * Get system versions
      *
      * @return array
      */
     public function getServers()
     {
-        $serverWeb = $_SERVER['SERVER_SOFTWARE'] ?: getenv('SERVER_SOFTWARE') ?? null;
-        $dbVersion = DB::select(DB::raw("select version() as version"))[0]->version ?? null;
+        $serverWeb = $_SERVER['SERVER_SOFTWARE'] ?? getenv('SERVER_SOFTWARE') ?? null;
+
+        try {
+            $dbVersion = DB::select(DB::raw("select version() as version"))[0]->version ?? null;
+        } catch (\Exception $e) {
+            // nothing
+        }
 
         return [
             'php'   => phpversion(),
             'web'   => $serverWeb,
-            'mysql' => $dbVersion,
+            'mysql' => $dbVersion ?? null,
         ];
     }
 

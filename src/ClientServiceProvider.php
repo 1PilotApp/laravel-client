@@ -3,6 +3,8 @@
 namespace OnePilot\Client;
 
 use Illuminate\Support\ServiceProvider;
+use OnePilot\Client\Classes\ComposerPackageDetector;
+use OnePilot\Client\Contracts\PackageDetector;
 
 class ClientServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,6 @@ class ClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(PackageDetector::class, ComposerPackageDetector::class);
     }
 }
