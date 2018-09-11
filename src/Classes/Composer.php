@@ -4,6 +4,9 @@ namespace OnePilot\Client\Classes;
 
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use OnePilot\Client\Contracts\PackageDetector;
 use OnePilot\Client\Traits\Instantiable;
@@ -16,7 +19,9 @@ class Composer
     protected static $installedPackages;
 
     /** @var \Illuminate\Support\Collection */
-    protected static $packagesContraints;
+    protected static $packagesConstraints;
+
+    protected $packagist = [];
 
     public function __construct()
     {
@@ -25,7 +30,7 @@ class Composer
 
         self::$installedPackages = $detector->getPackages();
 
-        self::$packagesContraints = $detector->getPackagesConstraints();
+        self::$packagesConstraints = $detector->getPackagesConstraints();
     }
 
     /**
@@ -37,26 +42,53 @@ class Composer
     {
         $packages = [];
 
-        foreach (self::$installedPackages as $package) {
-            if (empty($package->version) || empty($package->name)) {
-                continue;
-            }
+        collect(self::$installedPackages)
+            ->chunk(50)
+            ->each(function (Collection $chunk) use (&$packages) {
+                $promises = [];
+                $client = new Client();
 
-            $currentVersion = $this->removePrefix($package->version);
-            $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
+                $chunk
+                    ->filter(function ($package) {
+                        return !empty($package->version) && !empty($package->name);
+                    })
+                    ->each(function ($package) use (&$packages, &$promises, $client) {
 
-            $packages[] = [
-                'name'                   => str_after($package->name, '/'),
-                'code'                   => $package->name,
-                'type'                   => 'package',
-                'active'                 => 1,
-                'version'                => $currentVersion,
-                'new_version'            => $latestVersion['compatible'],
-                'last_available_version' => $latestVersion['available'],
-            ];
-        }
+                        if ($this->isCached($package)) {
+                            $packages[] = $this->generatePackageData($package);
+
+                            return;
+                        }
+
+                        $promises[$package->name] = $client
+                            ->getAsync($this->getPackagistDetailUrl($package->name))
+                            ->then(function (Response $response) use (&$packages, $package) {
+                                $this->storePackagistVersions($package->name, $response->getBody());
+
+                                $packages[] = $this->generatePackageData($package);
+                            });
+                    });
+
+                \GuzzleHttp\Promise\settle($promises)->wait();
+            });
 
         return $packages;
+    }
+
+    private function generatePackageData($package)
+    {
+        $currentVersion = $this->removePrefix($package->version);
+        $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
+
+        return [
+            'name'                   => str_after($package->name, '/'),
+            'code'                   => $package->name,
+            'type'                   => 'package',
+            'active'                 => 1,
+            'version'                => $currentVersion,
+            'new_version'            => $latestVersion['compatible'],
+            'last_available_version' => $latestVersion['available'],
+        ];
     }
 
     /**
@@ -69,17 +101,16 @@ class Composer
      */
     public function getLatestPackageVersion($packageName, $currentVersion = null)
     {
-        $cacheKey = 'onepilot-getLatestPackageVersion-' . md5($packageName . $currentVersion);
+        return Cache::remember($this->getCacheKey($packageName, $currentVersion), 10,
+            function () use ($packageName, $currentVersion) {
+                $packages = $this->getLatestPackage($packageName);
 
-        return Cache::remember($cacheKey, 10, function () use ($packageName, $currentVersion) {
-            $packages = $this->getLatestPackage($packageName);
+                return collect($packages)->map(function ($package) use ($currentVersion) {
+                    $version = $this->removePrefix(optional($package)->version);
 
-            return collect($packages)->map(function ($package) use ($currentVersion) {
-                $version = $this->removePrefix(optional($package)->version);
-
-                return $version == $currentVersion ? null : $version;
+                    return $version == $currentVersion ? null : $version;
+                });
             });
-        });
     }
 
     /**
@@ -91,23 +122,14 @@ class Composer
      */
     private function getLatestPackage($packageName)
     {
-        $packagistUrl = 'https://packagist.org/packages/' . $packageName . '.json';
-
-        try {
-            $packagistInfo = json_decode(file_get_contents($packagistUrl));
-            $versions = $packagistInfo->package->versions;
-        } catch (\Exception $e) {
-            return null;
-        }
-
-        if (!is_object($versions)) {
+        if (empty($versions = $this->getVersionsFromPackagist($packageName))) {
             return null;
         }
 
         $lastCompatibleVersion = null;
         $lastAvailableVersion = null;
 
-        $packageConstraints = self::$packagesContraints->get($packageName);
+        $packageConstraints = self::$packagesConstraints->get($packageName);
 
         foreach ($versions as $versionData) {
             $versionNumber = $versionData->version;
@@ -171,5 +193,47 @@ class Composer
         }
 
         return true;
+    }
+
+    private function getPackagistDetailUrl(string $packageName): string
+    {
+        return 'https://packagist.org/packages/' . $packageName . '.json';
+    }
+
+    private function storePackagistVersions(string $package, string $response)
+    {
+        $packagistInfo = json_decode($response);
+
+        $this->packagist[$package] = $packagistInfo->package->versions;
+    }
+
+    private function getVersionsFromPackagist(string $package)
+    {
+        if (empty($versions = array_get($this->packagist, $package))) {
+            try {
+                $packagistInfo = json_decode(file_get_contents($this->getPackagistDetailUrl($package)));
+                $versions = $packagistInfo->package->versions;
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        unset($this->packagist[$package]);
+
+        if (!is_object($versions)) {
+            return null;
+        }
+
+        return $versions;
+    }
+
+    private function getCacheKey($packageName, $currentVersion)
+    {
+        return 'onepilot-getLatestPackageVersion-' . md5($packageName . $currentVersion);
+    }
+
+    private function isCached($package)
+    {
+        return Cache::has($this->getCacheKey($package->name, $this->removePrefix($package->version)));
     }
 }
