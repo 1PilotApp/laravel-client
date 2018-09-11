@@ -46,7 +46,8 @@ class ValidationsTest extends TestCase
             })
             ->count();
 
-        self::$response->assertJsonCount($packages, 'plugins');
+        $data = self::$response->getOriginalContent();
+        $this->assertEquals($packages, count($data['plugins']));
     }
 
     /** @test */
