@@ -7,9 +7,17 @@ use OnePilot\Client\Contracts\PackageDetector;
 
 class ComposerPackageDetector implements PackageDetector
 {
+    /** @var string */
+    private $appRoot;
+
+    public function __construct(string $projectRoot)
+    {
+        $this->appRoot = $projectRoot;
+    }
+
     public function getPackages(): Collection
     {
-        $installedJsonFile = base_path('vendor/composer/installed.json');
+        $installedJsonFile = $this->appRoot . '/vendor/composer/installed.json';
         $installedPackages = json_decode(file_get_contents($installedJsonFile));
 
         return collect($installedPackages);
@@ -45,11 +53,11 @@ class ComposerPackageDetector implements PackageDetector
 
     private function appComposerData()
     {
-        if (!file_exists(base_path('composer.json'))) {
+        if (!file_exists($appComposer = $this->appRoot . '/composer.json')) {
             return null;
         }
 
-        $content = file_get_contents(base_path('composer.json'));
+        $content = file_get_contents($appComposer);
 
         return json_decode($content) ?? null;
     }

@@ -29,6 +29,8 @@ class ClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(PackageDetector::class, ComposerPackageDetector::class);
+        $this->app->bind(PackageDetector::class, function($app) {
+            return new ComposerPackageDetector(base_path());
+        });
     }
 }
