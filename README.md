@@ -1,5 +1,3 @@
-**PACKAGE STILL IN DEVELOPMENT**
-
 # 1Pilot.io connector for Laravel applications
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
