@@ -15,7 +15,7 @@ and secure.
 ## Install
 
 ``` bash
-composer require 1pilotapp/laravel-client:dev-master
+composer require 1pilotapp/laravel-client
 ```
 
 You need to publish the config and set `private_key` to a random string
@@ -35,7 +35,7 @@ composer test
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 

@@ -10,7 +10,9 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Pierre-André Vullioud"
+            "name": "1Pilot",
+            "homepage": "https://1Pilot.io",
+            "email": "support@1pilot.io"
         }
     ],
     "require": {
