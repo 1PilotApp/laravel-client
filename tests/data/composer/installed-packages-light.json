@@ -48,5 +48,10 @@
             "symfony/event-dispatcher": "~2.8|~3.0",
             "symfony/http-foundation": "~3.3"
         }
+    },
+    {
+        "name": "erusev/parsedown",
+        "version": "1.6.0",
+        "version_normalized": "1.6.0.0"
     }
 ]

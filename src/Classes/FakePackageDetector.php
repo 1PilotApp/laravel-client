@@ -44,7 +44,8 @@ class FakePackageDetector implements PackageDetector
             ->filter()
             ->map(function ($package) {
                 return $package->require ?? null;
-            });
+            })
+            ->filter();
 
         $constraints = [];
 
