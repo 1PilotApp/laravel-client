@@ -30,7 +30,8 @@ class ComposerPackageDetector implements PackageDetector
             ->filter()
             ->map(function ($package) {
                 return $package->require ?? null;
-            });
+            })
+            ->filter();
 
         $constraints = [];
 
