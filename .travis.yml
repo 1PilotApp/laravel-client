@@ -36,4 +36,4 @@ install:
 - travis_retry composer install --prefer-dist --no-interaction --no-suggest
 
 script:
-- phpunit
+- vendor/bin/phpunit
