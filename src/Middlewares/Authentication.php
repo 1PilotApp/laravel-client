@@ -3,7 +3,7 @@
 namespace OnePilot\Client\Middlewares;
 
 use Closure;
-use OnePilot\Client\Exceptions\ValidateFailed;
+use OnePilot\Client\Exceptions\OnePilotException;
 
 class Authentication
 {
@@ -13,15 +13,15 @@ class Authentication
         $stamp = $request->header('stamp');
 
         if (!$signature) {
-            throw ValidateFailed::missingSignature();
+            throw OnePilotException::missingSignature();
         }
 
         if (!$this->isValidateTimeStamp($stamp)) {
-            throw ValidateFailed::invalidTimestamp();
+            throw OnePilotException::invalidTimestamp();
         }
 
         if (!$this->isValidSignature($signature, $stamp)) {
-            throw ValidateFailed::invalidSignature($signature);
+            throw OnePilotException::invalidSignature($signature);
         }
 
         return $next($request);
@@ -32,7 +32,7 @@ class Authentication
         $secret = config('onepilot.private_key');
 
         if (empty($secret)) {
-            throw ValidateFailed::signingPrivateKeyNotSet();
+            throw OnePilotException::signingPrivateKeyNotSet();
         }
 
         $computedSignature = hash_hmac('sha256', $stamp, $secret);
