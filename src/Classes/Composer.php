@@ -6,7 +6,9 @@ use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use OnePilot\Client\Contracts\PackageDetector;
 use OnePilot\Client\Traits\Instantiable;
 
@@ -78,7 +80,7 @@ class Composer
         $latestVersion = $this->getLatestPackageVersion($package->name, $currentVersion);
 
         return [
-            'name'                   => str_after($package->name, '/'),
+            'name'                   => Str::after($package->name, '/'),
             'code'                   => $package->name,
             'type'                   => 'package',
             'active'                 => 1,
@@ -203,7 +205,7 @@ class Composer
 
     private function getVersionsFromPackagist(string $package)
     {
-        if (empty($versions = array_get($this->packagist, $package))) {
+        if (empty($versions = Arr::get($this->packagist, $package))) {
             try {
                 $packagistInfo = json_decode(file_get_contents($this->getPackagistDetailUrl($package)));
                 $versions = $packagistInfo->package->versions;

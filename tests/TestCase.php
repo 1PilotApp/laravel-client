@@ -13,7 +13,7 @@ abstract class TestCase extends Orchestra
     protected $timestamp;
     protected $hash;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

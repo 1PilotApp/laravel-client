@@ -10,7 +10,7 @@ class MailTesterTest extends TestCase
     /** @var \Illuminate\Foundation\Testing\TestResponse */
     private static $response;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
