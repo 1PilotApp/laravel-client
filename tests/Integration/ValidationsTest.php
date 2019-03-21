@@ -3,6 +3,7 @@
 namespace OnePilot\Client\Tests\Integration;
 
 use App;
+use Illuminate\Support\Arr;
 use OnePilot\Client\Classes\FakePackageDetector;
 use OnePilot\Client\Tests\TestCase;
 
@@ -11,7 +12,7 @@ class ValidationsTest extends TestCase
     /** @var \Illuminate\Foundation\Testing\TestResponse */
     private static $response;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,9 +32,9 @@ class ValidationsTest extends TestCase
     {
         $data = self::$response->getOriginalContent();
 
-        $this->assertEquals(app()->version(), array_get($data, 'core.version'));
+        $this->assertEquals(app()->version(), Arr::get($data, 'core.version'));
 
-        $this->assertEquals(phpversion(), array_get($data, 'servers.php'));
+        $this->assertEquals(phpversion(), Arr::get($data, 'servers.php'));
     }
 
     /** @test */
