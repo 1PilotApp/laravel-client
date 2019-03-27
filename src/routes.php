@@ -7,3 +7,5 @@ Route::get('onepilot/validate', 'OnePilot\Client\Controllers\VersionController@i
 Route::post('onepilot/validate', 'OnePilot\Client\Controllers\VersionController@index');
 
 Route::post('onepilot/mail-tester', 'OnePilot\Client\Controllers\MailTesterController@send');
+
+Route::post('onepilot/errors', 'OnePilot\Client\Controllers\ErrorsController@browse');

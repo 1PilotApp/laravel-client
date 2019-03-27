@@ -52,4 +52,9 @@ class OnePilotException extends Exception
 
         return response($content, $httpCode);
     }
+
+    public function report()
+    {
+        // disable reporting
+    }
 }
