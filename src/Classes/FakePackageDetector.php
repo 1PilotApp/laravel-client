@@ -28,6 +28,11 @@ class FakePackageDetector implements PackageDetector
         self::$packages = $collection;
     }
 
+    public static function setPackagesFromArray(array $array)
+    {
+        self::setPackages(collect(json_decode(json_encode($array))));
+    }
+
     public static function setPackagesFromPath(string $path)
     {
         self::setPackages(collect(json_decode(file_get_contents($path))));

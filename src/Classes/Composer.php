@@ -85,8 +85,8 @@ class Composer
             'type'                   => 'package',
             'active'                 => 1,
             'version'                => $currentVersion,
-            'new_version'            => $latestVersion['compatible'],
-            'last_available_version' => $latestVersion['available'],
+            'new_version'            => $latestVersion['compatible'] ?? null,
+            'last_available_version' => $latestVersion['available'] ?? null,
         ];
     }
 
@@ -142,6 +142,7 @@ class Composer
             }
 
             if (empty($packageConstraints)) {
+                $lastCompatibleVersion = $lastAvailableVersion;
                 continue;
             }
 
