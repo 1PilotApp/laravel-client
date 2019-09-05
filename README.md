@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://1pilot.io/laravel"><img src="https://1pilot.io/assets/images/repos/1pilot_logo_laravel.png" alt="1Pilot.io - a universal dashboard to effortlessly manage all your sites"></a>
+  <a href="https://1pilot.io/laravel"><img src="https://1pilot.io/assets/images/repos/1pilot_logo_laravel6.png" alt="1Pilot.io - a universal dashboard to effortlessly manage all your sites"></a>
 </p>
 
 <p align="center">
