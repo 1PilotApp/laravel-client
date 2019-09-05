@@ -174,7 +174,7 @@ class Composer
      */
     private function removePrefix($version, $prefix = 'v')
     {
-        if (empty($version) || !starts_with($version, $prefix)) {
+        if (empty($version) || !Str::startsWith($version, $prefix)) {
             return $version;
         }
 
