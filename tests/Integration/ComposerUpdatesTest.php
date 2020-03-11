@@ -117,7 +117,7 @@ class ComposerUpdatesTest extends TestCase
 
         $laravelSocialite = $this->findPackage($packages, 'laravel/socialite');
         $this->assertGreaterThan('3.2.9', $laravelSocialite['new_version']);
-        $this->assertLessThan('3.4.0', $laravelSocialite['new_version']);
+        $this->assertLessThan('4.0.0', $laravelSocialite['new_version']);
         $this->assertGreaterThan('4.1.0', $laravelSocialite['last_available_version']);
 
         $laravelNova = $this->findPackage($packages, 'laravel/nova');
