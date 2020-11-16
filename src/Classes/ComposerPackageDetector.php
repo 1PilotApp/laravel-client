@@ -20,6 +20,10 @@ class ComposerPackageDetector implements PackageDetector
         $installedJsonFile = $this->appRoot . '/vendor/composer/installed.json';
         $installedPackages = json_decode(file_get_contents($installedJsonFile));
 
+        if (!empty($installedPackages->packages)) {
+            return collect($installedPackages->packages); // composer v2
+        }
+
         return collect($installedPackages);
     }
 

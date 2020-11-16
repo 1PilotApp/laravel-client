@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-client` will be documented in this file.
 
+## 1.0.6 - 2020-11-16
+
+- Add support of composer 2
+
+## 1.0.5 - 2020-10-09
+
+- Add support of Laravel 8
+
+## 1.0.4 - 2020-03-11
+
+- Add support of Laravel 7
+
+## 1.0.3 - 2019-09-05
+
+- Add support for Laravel 6
+- Fix for return installed packages not publicly available on Packagist
+
 ## 1.0.2 - 2019-03-28
 
 - Add Email Verification support
