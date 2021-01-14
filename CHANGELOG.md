@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-client` will be documented in this file.
 
+## 1.0.7 - 2021-01-14
+- Avoid issue if Packagist is temporary unreachable
+
 ## 1.0.6 - 2020-11-16
 
 - Add support of composer 2

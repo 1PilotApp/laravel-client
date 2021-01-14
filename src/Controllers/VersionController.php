@@ -45,8 +45,8 @@ class VersionController extends Controller
 
         return [
             'version'                => app()->version(),
-            'new_version'            => $laravel['compatible'],
-            'last_available_version' => $laravel['available'],
+            'new_version'            => $laravel['compatible'] ?? null,
+            'last_available_version' => $laravel['available'] ?? null,
         ];
     }
 
