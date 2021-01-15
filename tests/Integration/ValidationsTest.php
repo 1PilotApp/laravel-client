@@ -67,7 +67,7 @@ class ValidationsTest extends TestCase
         $files = collect(self::$response->getOriginalContent()['files'] ?? []);
 
         $configApp = $files->first(function ($file) {
-            return $file['path'] == 'config/app.php';
+            return $file['path'] == 'config'. DIRECTORY_SEPARATOR .'app.php';
         });
 
         $this->assertNotNull($configApp['checksum']);

@@ -3,6 +3,9 @@
 namespace OnePilot\Client\Classes;
 
 use OnePilot\Client\Traits\Instantiable;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 
 class Files
 {
@@ -31,7 +34,7 @@ class Files
                 $absolutePath = base_path($relativePath);
             }
 
-            if (!file_exists($absolutePath)) {
+            if (!file_exists($absolutePath) || !is_file($absolutePath)) {
                 continue;
             }
 
@@ -55,12 +58,25 @@ class Files
      */
     private function getConfigFiles()
     {
-        return collect(glob(base_path('config/*')))->mapWithKeys(function ($absolutePath) {
+        /** @var SplFileInfo[] $iterator */
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(base_path('config')),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $files = [];
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $absolutePath = $file->getRealPath();
             $relativePath = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $absolutePath);
 
-            return [
-                $absolutePath => $relativePath,
-            ];
-        })->toArray();
+            $files[$absolutePath] = $relativePath;
+        }
+
+        return $files;
     }
 }
