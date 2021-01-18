@@ -65,6 +65,7 @@ class Files
         );
 
         $files = [];
+        $basePath = realpath(base_path()) . DIRECTORY_SEPARATOR;
 
         foreach ($iterator as $file) {
             if (!$file->isFile()) {
@@ -72,7 +73,7 @@ class Files
             }
 
             $absolutePath = $file->getRealPath();
-            $relativePath = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $absolutePath);
+            $relativePath = str_replace($basePath, '', $absolutePath);
 
             $files[$absolutePath] = $relativePath;
         }
