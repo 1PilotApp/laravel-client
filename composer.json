@@ -16,9 +16,9 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.0|^8.0",
         "ext-json": "*",
-        "composer/semver": "^1.4",
+        "composer/semver": "^1.4|^2.0|^3.0",
         "guzzlehttp/guzzle": "^6.3|^7.0",
         "illuminate/http": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
         "illuminate/routing": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
