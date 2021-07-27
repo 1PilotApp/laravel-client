@@ -2,6 +2,9 @@
 
 All notable changes to `laravel-client` will be documented in this file.
 
+## 1.0.8 - 2021-07-27
+- Add support of composer/semver 3.*
+
 ## 1.0.7 - 2021-01-14
 - Avoid issue if Packagist is temporary unreachable
 
