@@ -42,12 +42,27 @@ class MailTesterController extends Controller
     protected function sendEmail($email)
     {
         Mail::send([], [], function (\Illuminate\Mail\Message $message) use ($email) {
-            $siteUrl = config('app.url');
-
             $message
                 ->to($email)
-                ->subject('Test send by 1Pilot.io for ensure emails are properly sent')
-                ->setBody(<<<EOF
+                ->subject('Test send by 1Pilot.io for ensure emails are properly sent');
+
+            // Laravel < 9.x SwiftMailer
+            if (method_exists($message, 'getSwiftMessage')) {
+                $message->setBody($this->getBody());
+
+                return;
+            }
+
+            // Laravel >= 9.x Symfony Mailer
+            $message->text($this->getBody());
+        });
+    }
+
+    protected function getBody()
+    {
+        $siteUrl = config('app.url');
+
+        return <<<EOF
 This email was automatically sent by the 1Pilot Client installed on $siteUrl.
 
 Ground control to Major Tom
@@ -101,8 +116,6 @@ Can you...
 
 Space Oddity
 David Bowie
-EOF
-                );
-        });
+EOF;
     }
 }
