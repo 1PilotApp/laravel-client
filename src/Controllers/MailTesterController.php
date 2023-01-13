@@ -55,6 +55,7 @@ class MailTesterController extends Controller
 
             // Laravel >= 9.x Symfony Mailer
             $message->text($this->getBody());
+            $message->html($this->getBody());
         });
     }
 
