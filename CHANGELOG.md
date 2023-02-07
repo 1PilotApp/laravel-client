@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-client` will be documented in this file.
 
+## 1.0.10 - 2023-02-07
+- Add support of Laravel 10
+- Email verification also sends HTML version
+- Increase the list of monitored configs
+
 ## 1.0.9 - 2022-02-09
 -  Add support of Laravel 9
 
