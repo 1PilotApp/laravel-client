@@ -27,6 +27,6 @@ class ErrorsController extends Controller
         $browser->setSearch($request->get('search'));
         $browser->setLevels($request->get('levels'));
 
-        return ['data' => $browser->get()] + $browser->getPagination();
+        return ['data' => $browser->get(), 'base_path' => base_path()] + $browser->getPagination();
     }
 }
