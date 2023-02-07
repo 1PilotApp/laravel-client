@@ -11,14 +11,6 @@ use OnePilot\Client\Middlewares\Authentication;
 
 class VersionController extends Controller
 {
-    const CONFIGS_TO_MONITOR = [
-        'app.debug',
-        'app.timezone',
-        'app.env',
-        'mail.driver',
-        'mail.host',
-    ];
-
     public function __construct()
     {
         $this->middleware(Authentication::class);
@@ -30,12 +22,12 @@ class VersionController extends Controller
     public function index()
     {
         return [
-            'core'    => $this->getVersions(),
+            'core' => $this->getVersions(),
             'servers' => $this->getServers(),
             'plugins' => Composer::instance()->getPackagesData(),
-            'extra'   => $this->getExtra(),
-            'files'   => Files::instance()->getFilesProperties(),
-            'errors'  => $this->errorsOverview(),
+            'extra' => $this->getExtra(),
+            'files' => Files::instance()->getFilesProperties(),
+            'errors' => $this->errorsOverview(),
         ];
     }
 
@@ -44,8 +36,8 @@ class VersionController extends Controller
         $laravel = Composer::instance()->getLatestPackageVersion('laravel/framework', app()->version());
 
         return [
-            'version'                => app()->version(),
-            'new_version'            => $laravel['compatible'] ?? null,
+            'version' => app()->version(),
+            'new_version' => $laravel['compatible'] ?? null,
             'last_available_version' => $laravel['available'] ?? null,
         ];
     }
@@ -60,8 +52,8 @@ class VersionController extends Controller
         $serverWeb = $_SERVER['SERVER_SOFTWARE'] ?? getenv('SERVER_SOFTWARE') ?? null;
 
         return [
-            'php'   => phpversion(),
-            'web'   => $serverWeb,
+            'php' => phpversion(),
+            'web' => $serverWeb,
             'mysql' => $this->getDbVersion(),
         ];
     }
@@ -71,16 +63,32 @@ class VersionController extends Controller
      */
     private function getExtra()
     {
-        $extra = [
-            'storage_dir_writable' => is_writable(base_path('storage')),
-            'cache_dir_writable'   => is_writable(base_path('bootstrap/cache')),
-        ];
+        $configs = $this->config('app.debug', 'app.env', 'app.timezone');
 
-        foreach (self::CONFIGS_TO_MONITOR as $config) {
-            $extra[$config] = config($config);
+        if (version_compare(app()->version(), '6', '<=')) {
+            $configs += $this->config('mail.driver', 'mail.host');
+        } else {
+            $configs += $this->config('mail.default');
+
+            if (config('mail.default') == 'smtp') {
+                $configs += $this->config('mail.mailers.smtp.host');
+            }
         }
 
-        return $extra;
+        $configs += $this->config(
+            'mail.from.address',
+            'mail.from.name',
+            'queue.default',
+            'cache.default',
+            'logging.default',
+            'session.driver',
+            'session.lifetime'
+        );
+
+        $configs['storage_dir_writable'] = is_writable(base_path('storage'));
+        $configs['cache_dir_writable'] = is_writable(base_path('bootstrap/cache'));
+
+        return $configs;
     }
 
     private function errorsOverview()
@@ -141,5 +149,17 @@ class VersionController extends Controller
         $result = DB::select('select "SQLite " || sqlite_version() as version');
 
         return $result[0]->version ?? null;
+    }
+
+    /**
+     * @param ...$keys
+     *
+     * @return array
+     */
+    private function config(...$keys)
+    {
+        return collect($keys)->mapWithKeys(function ($item) {
+            return [$item => config($item)];
+        })->toArray();
     }
 }
