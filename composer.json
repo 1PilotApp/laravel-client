@@ -47,5 +47,7 @@
                 "OnePilot\\Client\\ClientServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
