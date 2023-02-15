@@ -19,15 +19,15 @@ class ComposerUpdatesTest extends TestCase
 
         $laravelFramework = $this->findPackage($packages, 'laravel/framework');
 
-        $this->assertGreaterThan('5.5.40', $laravelFramework['new_version']);
-        $this->assertLessThan('5.6.0', $laravelFramework['new_version']);
-        $this->assertGreaterThan('5.7.0', $laravelFramework['last_available_version']);
+        $this->assertVersionGreaterThan('5.5.40', $laravelFramework['new_version']);
+        $this->assertVersionLessThan('5.6.0', $laravelFramework['new_version']);
+        $this->assertVersionGreaterThan('5.7.0', $laravelFramework['last_available_version']);
 
         $symfonyConsole = $this->findPackage($packages, 'symfony/console');
 
-        $this->assertGreaterThan('3.4.1', $symfonyConsole['new_version']);
-        $this->assertLessThan('4.0.0', $symfonyConsole['new_version']);
-        $this->assertGreaterThan('4.1.0', $symfonyConsole['last_available_version']);
+        $this->assertVersionGreaterThan('3.4.1', $symfonyConsole['new_version']);
+        $this->assertVersionLessThan('4.0.0', $symfonyConsole['new_version']);
+        $this->assertVersionGreaterThan('4.1.0', $symfonyConsole['last_available_version']);
     }
 
     /** @test */
@@ -40,20 +40,20 @@ class ComposerUpdatesTest extends TestCase
 
         $laravelFramework = $this->findPackage($packages, 'laravel/framework');
 
-        $this->assertGreaterThan('5.6.35', $laravelFramework['new_version']);
-        $this->assertLessThan('5.7.0', $laravelFramework['new_version']);
-        $this->assertGreaterThan('5.7.0', $laravelFramework['last_available_version']);
+        $this->assertVersionGreaterThan('5.6.35', $laravelFramework['new_version']);
+        $this->assertVersionLessThan('5.7.0', $laravelFramework['new_version']);
+        $this->assertVersionGreaterThan('5.7.0', $laravelFramework['last_available_version']);
 
         $symfonyConsole = $this->findPackage($packages, 'symfony/console');
 
-        $this->assertGreaterThan('4.0.0', $symfonyConsole['new_version']);
-        $this->assertLessThan('5.0.0', $symfonyConsole['new_version']);
+        $this->assertVersionGreaterThan('4.0.0', $symfonyConsole['new_version']);
+        $this->assertVersionLessThan('5.0.0', $symfonyConsole['new_version']);
 
         $carbon = $this->findPackage($packages, 'nesbot/carbon');
 
         $this->assertEquals('1.25.0', $carbon['version']);
-        $this->assertLessThan('1.26.0', $carbon['new_version'] ?? 0);
-        $this->assertGreaterThan('2.0.0', $carbon['last_available_version']);
+        $this->assertVersionLessThan('1.26.0', $carbon['new_version'] ?? 0);
+        $this->assertVersionGreaterThan('2.0.0', $carbon['last_available_version']);
     }
 
     /** @test */
@@ -66,19 +66,19 @@ class ComposerUpdatesTest extends TestCase
 
         $laravelFramework = $this->findPackage($packages, 'laravel/framework');
 
-        $this->assertGreaterThan('5.7.0', $laravelFramework['new_version']);
-        $this->assertLessThan('5.8.0', $laravelFramework['new_version']);
+        $this->assertVersionGreaterThan('5.7.0', $laravelFramework['new_version']);
+        $this->assertVersionLessThan('5.8.0', $laravelFramework['new_version']);
 
         $symfonyConsole = $this->findPackage($packages, 'symfony/console');
 
-        $this->assertGreaterThan('4.1.0', $symfonyConsole['new_version']);
-        $this->assertLessThan('5.0.0', $symfonyConsole['new_version']);
+        $this->assertVersionGreaterThan('4.1.0', $symfonyConsole['new_version']);
+        $this->assertVersionLessThan('5.0.0', $symfonyConsole['new_version']);
 
         $carbon = $this->findPackage($packages, 'nesbot/carbon');
 
-        $this->assertGreaterThan('1.26.3', $carbon['new_version']);
-        $this->assertLessThan('2.0.0', $carbon['new_version']);
-        $this->assertGreaterThan('2.0.0', $carbon['last_available_version']);
+        $this->assertVersionGreaterThan('1.26.3', $carbon['new_version']);
+        $this->assertVersionLessThan('2.0.0', $carbon['new_version']);
+        $this->assertVersionGreaterThan('2.0.0', $carbon['last_available_version']);
     }
 
     /** @test */
@@ -86,20 +86,20 @@ class ComposerUpdatesTest extends TestCase
     {
         FakePackageDetector::setPackagesFromArray([
             [
-                'name'    => 'composer/semver',
+                'name' => 'composer/semver',
                 'version' => '1.4.0',
                 'require' => ['php' => '>=7.0.0'],
             ],
             [
-                'name'    => 'laravel/socialite',
+                'name' => 'laravel/socialite',
                 'version' => '3.2.0',
             ],
             [
-                'name'    => 'laravel/nova',
+                'name' => 'laravel/nova',
                 'version' => '1.0.1',
             ],
             [
-                'name'    => '1pilotapp/unknown',
+                'name' => '1pilotapp/unknown',
                 'version' => '1.0.1',
                 'require' => ['laravel/socialite' => '^3.2'],
             ],
@@ -112,13 +112,13 @@ class ComposerUpdatesTest extends TestCase
         $this->assertCount(4, $packages);
 
         $composerSemver = $this->findPackage($packages, 'composer/semver');
-        $this->assertGreaterThanOrEqual('1.5.0', $composerSemver['new_version']);
+        $this->assertVersionGreaterThanOrEqual('1.5.0', $composerSemver['new_version']);
         $this->assertNull($composerSemver['last_available_version']);
 
         $laravelSocialite = $this->findPackage($packages, 'laravel/socialite');
-        $this->assertGreaterThan('3.2.9', $laravelSocialite['new_version']);
-        $this->assertLessThan('4.0.0', $laravelSocialite['new_version']);
-        $this->assertGreaterThan('4.1.0', $laravelSocialite['last_available_version']);
+        $this->assertVersionGreaterThan('3.2.9', $laravelSocialite['new_version']);
+        $this->assertVersionLessThan('4.0.0', $laravelSocialite['new_version']);
+        $this->assertVersionGreaterThan('4.1.0', $laravelSocialite['last_available_version']);
 
         $laravelNova = $this->findPackage($packages, 'laravel/nova');
         $this->assertEquals('1.0.1', $laravelNova['version']);
@@ -131,5 +131,28 @@ class ComposerUpdatesTest extends TestCase
         return $packages->first(function ($package) use ($name) {
             return $package['code'] === $name;
         });
+    }
+
+    private function assertVersionGreaterThan($expected, $actual)
+    {
+        $this->assertVersionCompare($expected, $actual, '>');
+    }
+
+    private function assertVersionGreaterThanOrEqual($expected, $actual)
+    {
+        $this->assertVersionCompare($expected, $actual, '>=');
+    }
+
+    private function assertVersionLessThan($expected, $actual)
+    {
+        $this->assertVersionCompare($expected, $actual, '<');
+    }
+
+    private function assertVersionCompare($expected, $actual, $operator)
+    {
+        $this->assertTrue(
+            version_compare($actual, $expected, $operator),
+            "Failed asserting that '{$actual}' is $operator than '$expected'"
+        );
     }
 }
