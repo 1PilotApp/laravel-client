@@ -56,7 +56,7 @@ class ValidationsTest extends TestCase
     {
         $data = self::$response->getOriginalContent();
 
-        $this->assertEquals(App::environment(), $data['extra']['app.env'] ?? null);
+        $this->assertEquals(config('app.env'), $data['extra']['app.env'] ?? null);
 
         $this->assertEquals(config('app.debug'), $data['extra']['app.debug'] ?? null);
     }
