@@ -126,7 +126,7 @@ jobs:
 
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@v6
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
@@ -135,6 +135,10 @@ jobs:
                     extensions: dom, curl, libxml, mbstring, zip
                     tools: composer:v2
                     coverage: none
+
+            -   name: Disabled compose audit (for legacy Laravel versions)
+                if: contains(fromJson('["^9.0","^8.0","^7.0","^6.0","5.8.*","5.7.*","5.6.*","5.5.*"]'), matrix.laravel)
+                run: composer config "audit.block-insecure" false
 
             -   name: Install dependencies
                 run: |
