@@ -136,9 +136,10 @@ jobs:
                     tools: composer:v2
                     coverage: none
 
-            -   name: Disabled compose audit (for legacy Laravel versions)
-                if: contains(fromJson('["^9.0","^8.0","^7.0","^6.0","5.8.*","5.7.*","5.6.*","5.5.*"]'), matrix.laravel)
+            -   name: Disable compose audit (for legacy Laravel versions)
+                if: contains(fromJson('["^9.0","^8.0","^7.0","^6.0","5.8.*","5.7.*","5.6.*","5.5.*"]'), matrix.laravel) && matrix.php != '7.1'
                 run: composer config "audit.block-insecure" false
+                continue-on-error: true
 
             -   name: Install dependencies
                 run: |
